@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="200" height="60">
+  <rect width="200" height="60" fill="#304156" rx="5" ry="5"/>
+  <text x="20" y="40" font-family="Arial" font-size="24" font-weight="bold" fill="#fff">BetterU</text>
+  <circle cx="170" cy="30" r="15" fill="#409EFF"/>
+</svg>
