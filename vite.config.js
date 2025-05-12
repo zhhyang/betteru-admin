@@ -15,7 +15,6 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:8081', // 后端服务器地址
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
       }
     }
   }

@@ -32,6 +32,12 @@ const routes = [
         meta: { title: '问卷管理', icon: 'Document' }
       },
       {
+        path: 'question/:id',
+        name: 'QuestionManagement',
+        component: () => import('../views/question/index.vue'),
+        meta: { title: '问题管理', icon: 'List' }
+      },
+      {
         path: 'survey-category',
         name: 'SurveyCategory',
         component: () => import('../views/survey-category/index.vue'),

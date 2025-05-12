@@ -16,6 +16,18 @@
           {{ row.status }}
         </el-tag>
       </template>
+      
+      <!-- 自定义表单按钮 -->
+      <template #menu="{ type, size, disabled,row }">
+        <el-button
+          :type="type"
+          :size="size"
+          :disabled="disabled"
+          @click="openQuestionEditor(row)"
+        >
+          管理问题
+        </el-button>
+      </template>
     </avue-crud>
     
     <!-- 预览问卷对话框 -->
@@ -72,7 +84,8 @@ import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getSurveyList, addSurvey, updateSurvey, deleteSurvey } from '@/api/survey'
 import { getCategoryList } from '@/api/survey-category'
-
+import { useRouter } from 'vue-router'
+const router = useRouter()
 // 表格数据
 const tableData = ref([])
 
@@ -289,6 +302,11 @@ const handleSearch = (params) => {
 const handleView = (row) => {
   currentSurvey.value = row
   previewVisible.value = true
+}
+
+// 打开问题编辑器
+const openQuestionEditor = (row) => {
+  router.push('/question/'+row.id)
 }
 
 // 获取问卷分类列表
