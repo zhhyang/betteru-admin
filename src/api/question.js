@@ -18,7 +18,7 @@ export function getQuestionDetail(id) {
 }
 
 // 新增问卷
-export function addQuestion(data) {
+export function createQuestion(data) {
   return request({
     url: '/questions',
     method: 'post',
