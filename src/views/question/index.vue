@@ -86,8 +86,10 @@
                 class="option-item"
               >
                 <span class="option-index">{{ optIndex + 1 }}.</span>
-                <span class="option-label">{{ option.content }}</span>
-                <span v-if="option.score !== undefined" class="option-score">({{ option.score }}分)</span>
+                <span class="option-label">{{ option.label }}</span>
+                <span v-if="option.score !== undefined" class="option-score"
+                  >({{ option.score }}分)</span
+                >
               </div>
             </div>
           </div>
@@ -145,7 +147,7 @@
         </el-form-item>
         <el-form-item label="配图" prop="img">
           <el-upload
-          class="avatar-uploader"
+            class="avatar-uploader"
             :show-file-list="false"
             action="/api/admin/upload"
             :on-preview="handlePictureCardPreview"
@@ -153,8 +155,12 @@
             limit="1"
             :on-success="handleUploadSuccess"
           >
-          <img v-if="currentQuestion.img" :src="currentQuestion.img" class="avatar" />
-          <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+            <img
+              v-if="currentQuestion.img"
+              :src="currentQuestion.img"
+              class="avatar"
+            />
+            <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
           </el-upload>
         </el-form-item>
 
@@ -167,16 +173,16 @@
         >
           <el-divider content-position="left">选项配置</el-divider>
 
-          <draggable 
-            v-model="currentQuestion.options" 
-            item-key="value"
+          <draggable
+            v-model="currentQuestion.options"
+            item-key="hash"
             handle=".drag-handle"
             ghost-class="ghost-option"
             animation="300"
-            @start="drag=true" 
-            @end="drag=false"
+            @start="drag = true"
+            @end="drag = false"
           >
-            <template #item="{element: option, index}">
+            <template #item="{ element: option, index }">
               <div class="option-item">
                 <el-row :gutter="10">
                   <el-col :span="1">
@@ -185,7 +191,7 @@
                   <el-col :span="11">
                     <el-form-item
                       :label="`选项${index + 1}`"
-                      :prop="`options.${index}.content`"
+                      :prop="`options.${index}.label`"
                       :rules="{
                         required: true,
                         message: '选项内容不能为空',
@@ -193,15 +199,15 @@
                       }"
                     >
                       <el-input
-                        v-model="option.content"
+                        v-model="option.label"
                         placeholder="请输入选项内容"
                       ></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="6">
                     <el-form-item label="分值" :prop="`options.${index}.score`">
-                      <el-input-number 
-                        v-model="option.score" 
+                      <el-input-number
+                        v-model="option.score"
                         :min="0"
                         :max="100"
                         :precision="0"
@@ -211,7 +217,11 @@
                     </el-form-item>
                   </el-col>
                   <el-col :span="6" class="option-actions">
-                    <el-button type="danger" circle @click="removeOption(index)">
+                    <el-button
+                      type="danger"
+                      circle
+                      @click="removeOption(index)"
+                    >
                       <el-icon><Delete /></el-icon>
                     </el-button>
                   </el-col>
@@ -257,7 +267,11 @@
               :key="index"
               class="preview-option"
             >
-              <el-radio :label="option.value">{{ option.content }} <span v-if="option.score !== undefined" class="option-score">({{ option.score }}分)</span></el-radio>
+              <el-radio :label="option.label" :value="option.value" >{{ option.label }}
+                <span v-if="option.score !== undefined" class="option-score"
+                  >({{ option.score }}分)</span
+                ></el-radio
+              >
             </div>
           </el-radio-group>
         </template>
@@ -270,7 +284,12 @@
               :key="index"
               class="preview-option"
             >
-              <el-checkbox :label="option.value">{{option.content}} <span v-if="option.score !== undefined" class="option-score">({{ option.score }}分)</span></el-checkbox>
+              <el-checkbox :label="option.label" :value="option.value"
+                >{{ option.label }}
+                <span v-if="option.score !== undefined" class="option-score"
+                  >({{ option.score }}分)</span
+                ></el-checkbox
+              >
             </div>
           </el-checkbox-group>
         </template>
@@ -292,17 +311,24 @@
 <script setup>
 import { ref, reactive, computed, nextTick, onMounted } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { getSurveyQuestionList, createQuestion, updateQuestion, getQuestionDetail } from "@/api/question";
-import draggable from 'vuedraggable';
+import {
+  getSurveyQuestionList,
+  createQuestion,
+  updateQuestion,
+  getQuestionDetail,
+} from "@/api/question";
+import draggable from "vuedraggable";
 import { useRoute } from "vue-router";
 import { IMG_HOST } from "@/constants";
+
+import { forEach as _forEach } from "lodash-es";
 
 // 拖拽状态
 const drag = ref(false);
 
 // 路由参数
 const route = useRoute();
-const surveyId = route.params.id
+const surveyId = route.params.id;
 
 // 问题列表数据
 const questions = ref([]);
@@ -323,7 +349,6 @@ const page = reactive({
 // 对话框显示状态
 const dialogVisible = ref(false);
 const previewDialogVisible = ref(false);
-
 
 // 预览问题
 const previewQuestion = ref({});
@@ -347,7 +372,6 @@ const currentQuestion = reactive({
   options: [],
 });
 
-
 // 表单校验规则
 const rules = {
   title: [{ required: true, message: "请输入问题标题", trigger: "blur" }],
@@ -365,6 +389,16 @@ const filteredQuestions = computed(() => {
 // 分页后的问题列表（直接使用后端返回的数据）
 const paginatedQuestions = computed(() => {
   return questions.value;
+});
+
+const hashMap = computed(() => {
+  const mapData = {};
+  _forEach(currentQuestion.options, (item) => {
+    if (item.hash) {
+      mapData[item.hash] = true;
+    }
+  });
+  return mapData;
 });
 
 // 初始化加载数据
@@ -416,6 +450,16 @@ const fetchQuestions = async (params = {}) => {
   }
 };
 
+const getNewHash = () => {
+  let random = getRandom();
+  while (random in hashMap) {
+    random = getRandom();
+  }
+  return random;
+};
+const getRandom = () => {
+  return Math.random().toString().slice(-6);
+};
 // 添加问题
 const addQuestion = () => {
   isEdit.value = false;
@@ -423,6 +467,7 @@ const addQuestion = () => {
 
   // 重置表单
   Object.assign(currentQuestion, {
+    id:null,
     title: "",
     content: "", // 新增字段，用于存储问题内容
     type: "radio",
@@ -430,8 +475,8 @@ const addQuestion = () => {
     price: 0,
     img: "",
     options: [
-      { content: "选项1", value: "1", score: 0 },
-      { content: "选项2", value: "2", score: 0 },
+      { label: "选项1", score: 0 ,value: getNewHash() },
+      { label: "选项2", score: 0 ,value: getNewHash() },
     ],
   });
 
@@ -447,11 +492,11 @@ const addQuestion = () => {
 const editQuestion = async (question) => {
   isEdit.value = true;
   currentIndex.value = -1;
-  
+
   try {
     // 先根据ID查询最新的问题详情
     const detailData = await getQuestionDetail(question.id);
-    
+
     // 复制问题数据到当前编辑的问题
     Object.assign(currentQuestion, JSON.parse(JSON.stringify(detailData)));
 
@@ -475,17 +520,17 @@ const editQuestion = async (question) => {
   }
 };
 
-const  handleUploadSuccess = (response, file, fileList) => {
+const handleUploadSuccess = (response, file, fileList) => {
   console.log("上传成功", response, file, fileList);
-  currentQuestion.img =IMG_HOST + (response.data.url);
-}
+  currentQuestion.img = IMG_HOST + response.data.url;
+};
 
 // 预览问题
 const showQuestionPreview = async (question) => {
   try {
     // 先根据ID查询最新的问题详情
     const detailData = await getQuestionDetail(question.id);
-    
+
     previewQuestion.value = JSON.parse(JSON.stringify(detailData));
     previewAnswer.value = "";
     previewAnswerMulti.value = [];
@@ -536,7 +581,7 @@ const saveQuestion = () => {
       questionData.options = questionData.options.map((option, index) => ({
         ...option,
         sortOrder: index + 1,
-      }))
+      }));
 
       questionData.surveyId = surveyId;
       try {
@@ -566,8 +611,8 @@ const handleTypeChange = (type) => {
     // 如果是单选或多选，确保有选项
     if (!currentQuestion.options || currentQuestion.options.length === 0) {
       currentQuestion.options = [
-        { content: "选项1", value: "1", score: 0 },
-        { content: "选项2", value: "2", score: 0 },
+        { label: "选项1", hash: "1", score: 0 },
+        { label: "选项2", hash: "2", score: 0 },
       ];
     }
   } else {
@@ -582,11 +627,10 @@ const addOption = () => {
     currentQuestion.options = [];
   }
 
-  const newValue = (currentQuestion.options.length + 1).toString();
   currentQuestion.options.push({
-    content: `选项${currentQuestion.options.length + 1}`,
-    value: newValue,
-    score: 0 // 默认分值为0
+    label: `选项${currentQuestion.options.length + 1}`,
+    score: 0, // 默认分值为0,
+    value: getNewHash(),
   });
 };
 
@@ -641,7 +685,7 @@ const getQuestionTypeTag = (type) => {
   height: 178px;
   text-align: center;
 }
-.avatar{
+.avatar {
   width: 100px;
   height: 100px;
   object-fit: cover;
@@ -793,6 +837,6 @@ const getQuestionTypeTag = (type) => {
 .ghost-option {
   opacity: 0.5;
   background: #c8ebfb;
-  border: 1px dashed #409EFF;
+  border: 1px dashed #409eff;
 }
 </style>
