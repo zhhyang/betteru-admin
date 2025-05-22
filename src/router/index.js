@@ -14,31 +14,31 @@ const routes = [
     redirect: '/dashboard',
     children: [
       {
-        path: 'dashboard',
+        path: '/dashboard',
         name: 'Dashboard',
         component: () => import('../views/dashboard/index.vue'),
         meta: { title: '首页', icon: 'HomeFilled' }
       },
       {
-        path: 'user',
+        path: '/user',
         name: 'User',
         component: () => import('../views/user/index.vue'),
         meta: { title: '用户管理', icon: 'User' }
       },
       {
-        path: 'survey',
+        path: '/survey',
         name: 'Survey',
         component: () => import('../views/survey/index.vue'),
         meta: { title: '问卷管理', icon: 'Document' }
       },
       {
-        path: 'question/:id',
+        path: '/question/:id',
         name: 'QuestionManagement',
         component: () => import('../views/question/index.vue'),
         meta: { title: '问题管理', icon: 'List' }
       },
       {
-        path: 'survey-category',
+        path: '/survey-category',
         name: 'SurveyCategory',
         component: () => import('../views/survey-category/index.vue'),
         meta: { title: '问卷分类', icon: 'Folder' }
