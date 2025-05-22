@@ -87,8 +87,8 @@
               >
                 <span class="option-index">{{ optIndex + 1 }}.</span>
                 <span class="option-label">{{ option.label }}</span>
-                <span v-if="option.score !== undefined" class="option-score"
-                  >({{ option.score }}分)</span
+                <span v-if="option.value !== undefined" class="option-value"
+                  >({{ option.value }}分)</span
                 >
               </div>
             </div>
@@ -205,9 +205,9 @@
                     </el-form-item>
                   </el-col>
                   <el-col :span="6">
-                    <el-form-item label="分值" :prop="`options.${index}.score`">
+                    <el-form-item label="分值" :prop="`options.${index}.value`">
                       <el-input-number
-                        v-model="option.score"
+                        v-model="option.value"
                         :min="0"
                         :max="100"
                         :precision="0"
@@ -267,9 +267,10 @@
               :key="index"
               class="preview-option"
             >
-              <el-radio :label="option.label" :value="option.value" >{{ option.label }}
-                <span v-if="option.score !== undefined" class="option-score"
-                  >({{ option.score }}分)</span
+              <el-radio :label="option.label" :value="option.value"
+                >{{ option.label }}
+                <span v-if="option.value !== undefined" class="option-value"
+                  >({{ option.value }}分)</span
                 ></el-radio
               >
             </div>
@@ -286,8 +287,8 @@
             >
               <el-checkbox :label="option.label" :value="option.value"
                 >{{ option.label }}
-                <span v-if="option.score !== undefined" class="option-score"
-                  >({{ option.score }}分)</span
+                <span v-if="option.value !== undefined" class="option-value"
+                  >({{ option.value }}分)</span
                 ></el-checkbox
               >
             </div>
@@ -467,7 +468,7 @@ const addQuestion = () => {
 
   // 重置表单
   Object.assign(currentQuestion, {
-    id:null,
+    id: null,
     title: "",
     content: "", // 新增字段，用于存储问题内容
     type: "radio",
@@ -475,8 +476,8 @@ const addQuestion = () => {
     price: 0,
     img: "",
     options: [
-      { label: "选项1", score: 0 ,value: getNewHash() },
-      { label: "选项2", score: 0 ,value: getNewHash() },
+      { label: "选项1", value: 0 },
+      { label: "选项2", value: 0 },
     ],
   });
 
@@ -611,8 +612,8 @@ const handleTypeChange = (type) => {
     // 如果是单选或多选，确保有选项
     if (!currentQuestion.options || currentQuestion.options.length === 0) {
       currentQuestion.options = [
-        { label: "选项1", hash: "1", score: 0 },
-        { label: "选项2", hash: "2", score: 0 },
+        { label: "选项1", value: 0 },
+        { label: "选项2", value: 0 },
       ];
     }
   } else {
@@ -629,8 +630,7 @@ const addOption = () => {
 
   currentQuestion.options.push({
     label: `选项${currentQuestion.options.length + 1}`,
-    score: 0, // 默认分值为0,
-    value: getNewHash(),
+    value: 0, // 默认分值为0,
   });
 };
 
@@ -817,7 +817,7 @@ const getQuestionTypeTag = (type) => {
   margin-bottom: 15px;
 }
 
-.option-score {
+.option-value {
   color: #ff9900;
   font-size: 0.9em;
   margin-left: 5px;
