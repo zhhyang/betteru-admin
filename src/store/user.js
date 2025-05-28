@@ -11,7 +11,7 @@ export const useUserStore = defineStore('user', {
     // 用户token
     token: localStorage.getItem('token') || ''
   }),
-  
+
   getters: {
     // 是否已登录
     isLogin: (state) => {
@@ -22,26 +22,26 @@ export const useUserStore = defineStore('user', {
       return state.userInfo
     }
   },
-  
+
   actions: {
     // 设置用户信息
     setUserInfo(userInfo) {
       this.userInfo = userInfo
       localStorage.setItem('userInfo', JSON.stringify(userInfo))
     },
-    
+
     // 设置token
     setToken(token) {
       this.token = token
       localStorage.setItem('token', token)
     },
-    
+
     // 登录 - 简化版，无角色权限控制
     async login(loginForm) {
       try {
         // 实际项目中应该调用后端API
         // const { data } = await axios.post('/api/auth/login', loginForm)
-        
+
         // 模拟登录成功
         const data = {
           token: 'admin-token-' + Date.now(),
@@ -52,13 +52,13 @@ export const useUserStore = defineStore('user', {
             avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
           }
         }
-        
+
         this.setToken(data.token)
         this.setUserInfo(data.userInfo)
-        
+
         ElMessage.success('登录成功')
         router.push('/')
-        
+
         return data
       } catch (error) {
         console.error('登录失败:', error)
@@ -66,7 +66,7 @@ export const useUserStore = defineStore('user', {
         return Promise.reject(error)
       }
     },
-    
+
     // 退出登录 - 简化版
     logout() {
       // 清除token和用户信息
@@ -74,17 +74,17 @@ export const useUserStore = defineStore('user', {
       this.userInfo = {}
       localStorage.removeItem('token')
       localStorage.removeItem('userInfo')
-      
+
       // 跳转到登录页
       router.push('/login')
     },
-    
+
     // 获取用户信息 - 简化版
     async getUserInfoFromServer() {
       try {
         // 实际项目中应该调用后端API
         // const { data } = await axios.get('/api/user/info')
-        
+
         // 模拟获取用户信息
         const data = {
           id: 1,
@@ -92,9 +92,9 @@ export const useUserStore = defineStore('user', {
           name: '管理员',
           avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
         }
-        
+
         this.setUserInfo(data)
-        
+
         return data
       } catch (error) {
         console.error('获取用户信息失败:', error)
@@ -104,5 +104,3 @@ export const useUserStore = defineStore('user', {
   }
 })
 
-// 导入菜单store，解决循环引用问题
-import { useMenuStore } from './menu'

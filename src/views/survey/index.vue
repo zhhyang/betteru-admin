@@ -27,6 +27,14 @@
         >
           管理问题
         </el-button>
+        <el-button
+          type="warning"
+          :size="size"
+          :disabled="disabled"
+          @click="openScoringRuleEditor(row)"
+        >
+          评分规则
+        </el-button>
       </template>
     </avue-crud>
     
@@ -307,6 +315,11 @@ const handleView = (row) => {
 // 打开问题编辑器
 const openQuestionEditor = (row) => {
   router.push('/question/'+row.id)
+}
+
+// 打开评分规则编辑器
+const openScoringRuleEditor = (row) => {
+  router.push('/scoring-rule/' + row.id)
 }
 
 // 获取问卷分类列表

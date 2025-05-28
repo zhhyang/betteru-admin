@@ -35,13 +35,19 @@ const routes = [
         path: '/question/:id',
         name: 'QuestionManagement',
         component: () => import('../views/question/index.vue'),
-        meta: { title: '问题管理', icon: 'List' }
+        meta: { title: '问题管理', icon: 'List',menuHidden: true }
       },
       {
         path: '/survey-category',
         name: 'SurveyCategory',
         component: () => import('../views/survey-category/index.vue'),
         meta: { title: '问卷分类', icon: 'Folder' }
+      },
+      {
+        path: '/scoring-rule/:surveyId',
+        name: 'ScoringRule',
+        component: () => import('../views/scoring-rule/index.vue'),
+        meta: { title: '评分规则', icon: 'TrendCharts',menuHidden: true }
       }
     ]
   },

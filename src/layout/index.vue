@@ -68,9 +68,7 @@
       <div class="app-main">
         <router-view v-slot="{ Component }">
           <transition name="fade-transform" mode="out-in">
-            <keep-alive>
               <component :is="Component" />
-            </keep-alive>
           </transition>
         </router-view>
       </div>
@@ -103,7 +101,7 @@ const toggleSidebar = () => {
 
 // 获取路由
 const routes = computed(() => {
-  return router.options.routes.find(r => r.path === '/').children || []
+  return router.options.routes.find(r => r.path === '/').children.filter(child => !child.meta.menuHidden) || []
 })
 
 // 当前激活的菜单
