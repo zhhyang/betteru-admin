@@ -43,6 +43,22 @@ export function deleteSurvey(id) {
   })
 }
 
+// 发布问卷
+export function publishSurvey(id) {
+  return request({
+    url: `/surveys/${id}/publish`,
+    method: 'post'
+  })
+}
+
+// 取消发布问卷
+export function unpublishSurvey(id) {
+  return request({
+    url: `/surveys/${id}/unpublish`,
+    method: 'post'
+  })
+}
+
 // 获取问卷分类详情
 export function getCategoryDetail(id) {
   return request({

@@ -48,6 +48,12 @@ const routes = [
         name: 'ScoringRule',
         component: () => import('../views/scoring-rule/index.vue'),
         meta: { title: '评分规则', icon: 'TrendCharts',menuHidden: true }
+      },
+      {
+        path: '/survey-record',
+        name: 'SurveyRecord',
+        component: () => import('../views/survey-record/index.vue'),
+        meta: { title: '问卷记录', icon: 'DataLine' }
       }
     ]
   },
